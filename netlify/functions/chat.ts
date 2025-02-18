@@ -1,6 +1,7 @@
 import type { Context } from "@netlify/functions";
 import { getDeployStore } from "@netlify/blobs";
 import OpenAI from "openai";
+import { randomUUID } from "crypto";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -28,7 +29,7 @@ async function handleNewConversation(context: Context, store: ReturnType<typeof 
     await store.delete(`${oldSessionId}`);
   }
   
-  const sessionId = crypto.randomUUID();
+  const sessionId = randomUUID();
   createSessionCookie(context, sessionId);
   return new Response(JSON.stringify({ success: true }));
 }
@@ -87,7 +88,7 @@ export default async function(req: Request, context: Context) {
 
     let sessionId = context.cookies.get("session_id");
     if (!sessionId) {
-      sessionId = crypto.randomUUID();
+      sessionId = randomUUID();
       createSessionCookie(context, sessionId);
     }
 
