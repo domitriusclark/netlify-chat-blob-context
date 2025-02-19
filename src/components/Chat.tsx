@@ -9,7 +9,6 @@ export default function Chat() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [showLoading, setShowLoading] = useState(false);
   const [hasContext, setHasContext] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -108,18 +107,6 @@ export default function Chat() {
     scrollToBottom();
   }, [messages]);
 
-  useEffect(() => {
-    let timeout: NodeJS.Timeout;
-    if (isLoading) {
-      setShowLoading(true);
-    } else {
-      timeout = setTimeout(() => {
-        setShowLoading(false);
-      }, 500); // Minimum 500ms display time
-    }
-    return () => clearTimeout(timeout);
-  }, [isLoading]);
-
   return (
     <div className="flex flex-col h-[600px] border border-gray-200 rounded-lg bg-white">
       <div className="flex justify-between items-center p-4 border-b border-gray-200">
@@ -135,18 +122,6 @@ export default function Chat() {
       </div>
       <div className="flex-1 overflow-y-auto p-4">
         {messages.map(renderMessage)}
-        {showLoading && (
-          <div className="mb-4 p-3 rounded-lg max-w-[80%] mr-auto bg-gray-100 text-gray-800">
-            <div className="flex items-center gap-2">
-              <strong>AI: </strong>
-              <div className="flex space-x-1">
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" />
-              </div>
-            </div>
-          </div>
-        )}
         <div ref={messagesEndRef} />
       </div>
       <form onSubmit={handleSubmit} className="flex p-4 border-t border-gray-200 gap-2">

@@ -29,7 +29,6 @@ export default async function(req: Request, context: Context) {
     const { message, newConversation } = await req.json();
     const store = getDeployStore("chat-history");
     
-    // Handle new conversation request
     if (newConversation) {
       const sessionId = randomUUID();
       context.cookies.set({
@@ -44,7 +43,6 @@ export default async function(req: Request, context: Context) {
       return new Response(JSON.stringify({ success: true }));
     }
 
-    // Get or create session
     let sessionId = context.cookies.get("session_id");
     if (!sessionId) {
       sessionId = randomUUID();
@@ -62,7 +60,6 @@ export default async function(req: Request, context: Context) {
       return new Response("Message is required", { status: 400 });
     }
 
-    // Get history and create completion
     const history = await getChatHistory(sessionId, store);
     const userMessage: ChatMessage = {
       role: "user",
